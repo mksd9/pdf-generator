@@ -2,7 +2,9 @@
 export const TABLE_CONSTANTS = {
     COLUMNS: {
       START: 0,
-      END: 4,
+      MAIN_COLUMNS_COUNT: 5,  // 列A～列Eまでの基本列数
+      TOTAL_COLUMNS_COUNT: 6,  // 列A～列Fまでの総列数
+      END: 6,  // 列Fまで表示（TOTAL_COLUMNS_COUNT - 1）
       BARCODE: 2  // JANコードが格納される列
     },
     STYLES: {
