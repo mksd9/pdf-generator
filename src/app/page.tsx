@@ -123,7 +123,7 @@ export default function Home() {
             const textBWidth = font.widthOfTextAtSize(textB, PDF_LAYOUT.TEXT.FONT_SIZE);
             page.drawText(textB, {
               x: containerX + (containerWidth - textBWidth) / 2,
-              y: containerTopY - lineHeight,
+              y: containerTopY - lineHeight - (PDF_LAYOUT.TEXT.COLUMN_B_OFFSET * PDF_LAYOUT.CONVERSION.MM_TO_POINTS),
               font,
               size: PDF_LAYOUT.TEXT.FONT_SIZE,
             });
@@ -133,7 +133,7 @@ export default function Home() {
             const textCWidth = font.widthOfTextAtSize(textC, PDF_LAYOUT.TEXT.FONT_SIZE);
             page.drawText(textC, {
               x: containerX + (containerWidth - textCWidth) / 2,
-              y: containerTopY - lineHeight * 2,
+              y: containerTopY - lineHeight * 2 - (PDF_LAYOUT.TEXT.COLUMN_B_OFFSET * PDF_LAYOUT.CONVERSION.MM_TO_POINTS),
               font,
               size: PDF_LAYOUT.TEXT.FONT_SIZE,
             });
@@ -143,7 +143,7 @@ export default function Home() {
             const textDWidth = font.widthOfTextAtSize(textD, PDF_LAYOUT.TEXT.FONT_SIZE);
             page.drawText(textD, {
               x: containerX + (containerWidth - textDWidth) / 2,
-              y: containerTopY - lineHeight * 3,
+              y: containerTopY - lineHeight * 3 - (PDF_LAYOUT.TEXT.COLUMN_B_OFFSET * PDF_LAYOUT.CONVERSION.MM_TO_POINTS),
               font,
               size: PDF_LAYOUT.TEXT.FONT_SIZE,
             });
@@ -153,7 +153,7 @@ export default function Home() {
             const textEWidth = font.widthOfTextAtSize(textE, PDF_LAYOUT.TEXT.FONT_SIZE);
             page.drawText(textE, {
               x: containerX + (containerWidth - textEWidth) / 2,
-              y: containerTopY - lineHeight * 4,
+              y: containerTopY - lineHeight * 4 - (PDF_LAYOUT.TEXT.COLUMN_B_OFFSET * PDF_LAYOUT.CONVERSION.MM_TO_POINTS),
               font,
               size: PDF_LAYOUT.TEXT.FONT_SIZE,
             });

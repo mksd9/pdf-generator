@@ -20,7 +20,7 @@ export const TABLE_CONSTANTS = {
     FORMAT: 'EAN13',
     SETTINGS: {
       width: 4.8,    // 線の幅
-      height: 200,   // バーコードの高さ
+      height: 180,   // バーコードの高さ
       fontSize: 60,  // バーコード下の文字サイズ
       margin: 2,     // バーコードの余白
       textMargin: 4  // バーコード文字の余白
@@ -51,14 +51,15 @@ export const PDF_LAYOUT = {
     MM_TO_POINTS: 2.83465  // 1mm ≈ 2.83465ポイント
   },
   TEXT: {
-    MARGIN: 2,    // mm
+    MARGIN: 2.5,    // mm
     LINE_HEIGHT: 2.5,  // mm
-    FONT_SIZE: 6
+    FONT_SIZE: 6,
+    COLUMN_B_OFFSET: 1.0  // 列B、C、D,EのY軸方向オフセット（mm）
   },
   BORDER: {
     WIDTH: 0.5
   },
   BARCODE: {
-    HEIGHT_SCALE: 0.5  // コンテナの高さの80%
+    HEIGHT_SCALE: 0.45  // コンテナの高さの80%
   }
 } as const;
