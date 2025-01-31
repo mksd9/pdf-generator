@@ -6,7 +6,12 @@ export const TABLE_CONSTANTS = {
       BARCODE: 2  // JANコードが格納される列
     },
     STYLES: {
-      CELL_CLASS: 'border p-2'
+      CELL_CLASS: 'border p-2',
+      COLUMN_WIDTHS: {
+        PRODUCT_CODE: 'min-w-[100px]',    // C-1列（商品コード）
+        PRODUCT_NAME: 'min-w-[200px]',    // 商品名列
+        DEFAULT: 'min-w-[150px]'          // その他の列
+      }
     }
   } as const;
   
@@ -14,16 +19,16 @@ export const TABLE_CONSTANTS = {
   export const BARCODE_CONSTANTS = {
     FORMAT: 'EAN13',
     SETTINGS: {
-      width: 2.4,    // 線の幅
-      height: 100,   // バーコードの高さ
-      fontSize: 30,  // バーコード下の文字サイズ
+      width: 4.8,    // 線の幅
+      height: 200,   // バーコードの高さ
+      fontSize: 60,  // バーコード下の文字サイズ
       margin: 2,     // バーコードの余白
       textMargin: 4  // バーコード文字の余白
     },
     DISPLAY: {
-      maxWidth: 180,  // プレビュー時の最大幅（px）
-      maxHeight: 60,  // プレビュー時の最大高さ（px）
-      previewScale: '50%' // プレビュー時のスケール
+      maxWidth: 360,  // プレビュー時の最大幅（px）
+      maxHeight: 120,  // プレビュー時の最大高さ（px）
+      previewScale: '80%' // プレビュー時のスケール
     }
   } as const;
   

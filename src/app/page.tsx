@@ -240,7 +240,11 @@ export default function Home() {
                 {sheetData.map((row: (string | number)[], index: number) => (
                   <tr key={index}>
                     {Array.from({ length: TABLE_CONSTANTS.COLUMNS.END + 1 }).map((_, colIndex) => (
-                      <td key={colIndex} className={TABLE_CONSTANTS.STYLES.CELL_CLASS}>
+                      <td key={colIndex} className={`${TABLE_CONSTANTS.STYLES.CELL_CLASS} ${
+                        colIndex === 0 ? TABLE_CONSTANTS.STYLES.COLUMN_WIDTHS.PRODUCT_CODE :
+                        colIndex === 1 ? TABLE_CONSTANTS.STYLES.COLUMN_WIDTHS.PRODUCT_NAME :
+                        TABLE_CONSTANTS.STYLES.COLUMN_WIDTHS.DEFAULT
+                      }`}>
                         {String(row[colIndex] || '')}
                       </td>
                     ))}
