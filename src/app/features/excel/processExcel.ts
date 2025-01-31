@@ -27,12 +27,15 @@ export const processExcelFile = async (file: File): Promise<ProcessExcelResult> 
 
     const jsonData = XLSX.utils.sheet_to_json<(string | number)[]>(firstSheet, { 
       header: 1,
-      defval: '',  // 空のセルに対してデフォルト値を設定
-      blankrows: false  // 空行を除外
+      raw: true,      // 生の値を取得
+      defval: '',     // 空のセルに対してデフォルト値を設定
+      blankrows: false // 空行を除外
     });
     
-    // 空でない行のみを処理
-    const dataRows = jsonData.filter(row => row.some(cell => cell !== ''));
+    // データが存在する行のみを処理
+    const dataRows = jsonData.filter(row => 
+      Array.isArray(row) && row.length > 0 && row.some(cell => cell !== '')
+    );
     
     const validRows = dataRows.filter((row: (string | number)[]) => {
       // 最低限必要な列数（5列）があることを確認
