@@ -84,105 +84,112 @@ export default function Home() {
         const page = pdfDoc.addPage(PageSizes.A4);
         const { height } = page.getSize();
 
-        // 上端からの位置に配置（PDFの座標系は左下が原点のため、ページ高さからマージンとコンテナ高さを引く）
-        const baseY = height - (PDF_LAYOUT.MARGINS.TOP * PDF_LAYOUT.CONVERSION.MM_TO_POINTS) - (PDF_LAYOUT.CONTAINER.HEIGHT * PDF_LAYOUT.CONVERSION.MM_TO_POINTS);
-        
-        // 4つのコンテナを横一列に配置
-        const numberOfContainers = 4;
-        for (let containerIndex = 0; containerIndex < numberOfContainers; containerIndex++) {
-          // コンテナのX座標を計算（左端からの距離 + コンテナの幅 * インデックス）
-          const containerX = (PDF_LAYOUT.MARGINS.LEFT * PDF_LAYOUT.CONVERSION.MM_TO_POINTS) + 
-                           (PDF_LAYOUT.CONTAINER.WIDTH * PDF_LAYOUT.CONVERSION.MM_TO_POINTS * containerIndex);
-          
-          // コンテナの罫線を描画
-          page.drawRectangle({
-            x: containerX,
-            y: baseY,
-            width: PDF_LAYOUT.CONTAINER.WIDTH * PDF_LAYOUT.CONVERSION.MM_TO_POINTS,
-            height: PDF_LAYOUT.CONTAINER.HEIGHT * PDF_LAYOUT.CONVERSION.MM_TO_POINTS,
-            borderColor: rgb(0, 0, 0),
-            borderWidth: PDF_LAYOUT.BORDER.WIDTH,
-          });
+        // 11行のコンテナを配置
+        const numberOfRows = 11;
+        const numberOfContainersPerRow = 4;
 
-          // テキストデータの表示（コンテナ内に配置）
-          const textMargin = PDF_LAYOUT.TEXT.MARGIN * PDF_LAYOUT.CONVERSION.MM_TO_POINTS;
-          const lineHeight = PDF_LAYOUT.TEXT.LINE_HEIGHT * PDF_LAYOUT.CONVERSION.MM_TO_POINTS;
-          const containerTopY = baseY + PDF_LAYOUT.CONTAINER.HEIGHT * PDF_LAYOUT.CONVERSION.MM_TO_POINTS;
+        for (let rowIndex = 0; rowIndex < numberOfRows; rowIndex++) {
+          // 各行のY座標を計算（上端からの距離 + コンテナの高さ * 行数）
+          const baseY = height - 
+            (PDF_LAYOUT.MARGINS.TOP * PDF_LAYOUT.CONVERSION.MM_TO_POINTS) - 
+            ((PDF_LAYOUT.CONTAINER.HEIGHT * (rowIndex + 1)) * PDF_LAYOUT.CONVERSION.MM_TO_POINTS);
 
-          // コンテナの全幅を計算
-          const containerWidth = PDF_LAYOUT.CONTAINER.WIDTH * PDF_LAYOUT.CONVERSION.MM_TO_POINTS;
-
-          // 列Bの値（商品名）
-          const textB = String(row[1] || '');
-          const textBWidth = font.widthOfTextAtSize(textB, PDF_LAYOUT.TEXT.FONT_SIZE);
-          page.drawText(textB, {
-            x: containerX + (containerWidth - textBWidth) / 2,
-            y: containerTopY - lineHeight,
-            font,
-            size: PDF_LAYOUT.TEXT.FONT_SIZE,
-          });
-
-          // 列Cの値（EAN 13桁）
-          const textC = String(row[2] || '');
-          const textCWidth = font.widthOfTextAtSize(textC, PDF_LAYOUT.TEXT.FONT_SIZE);
-          page.drawText(textC, {
-            x: containerX + (containerWidth - textCWidth) / 2,
-            y: containerTopY - lineHeight * 2,
-            font,
-            size: PDF_LAYOUT.TEXT.FONT_SIZE,
-          });
-
-          // 列Dの値（EAN 12桁）
-          const textD = String(row[3] || '');
-          const textDWidth = font.widthOfTextAtSize(textD, PDF_LAYOUT.TEXT.FONT_SIZE);
-          page.drawText(textD, {
-            x: containerX + (containerWidth - textDWidth) / 2,
-            y: containerTopY - lineHeight * 3,
-            font,
-            size: PDF_LAYOUT.TEXT.FONT_SIZE,
-          });
-
-          // 列Eの値（3桁）
-          const textE = String(row[4] || '');
-          const textEWidth = font.widthOfTextAtSize(textE, PDF_LAYOUT.TEXT.FONT_SIZE);
-          page.drawText(textE, {
-            x: containerX + (containerWidth - textEWidth) / 2,
-            y: containerTopY - lineHeight * 4,
-            font,
-            size: PDF_LAYOUT.TEXT.FONT_SIZE,
-          });
-
-          // バーコードの配置（コンテナ内の右側に配置）
-          const janCode = String(row[TABLE_CONSTANTS.COLUMNS.BARCODE]);
-          if (JAN_CODE.PATTERN.test(janCode)) {
-            const barcodeImage = await pdfDoc.embedPng(
-              Buffer.from(barcodeUrls[i].split(',')[1], 'base64')
-            );
+          // 4つのコンテナを横一列に配置
+          for (let containerIndex = 0; containerIndex < numberOfContainersPerRow; containerIndex++) {
+            // コンテナのX座標を計算（左端からの距離 + コンテナの幅 * インデックス）
+            const containerX = (PDF_LAYOUT.MARGINS.LEFT * PDF_LAYOUT.CONVERSION.MM_TO_POINTS) + 
+                             (PDF_LAYOUT.CONTAINER.WIDTH * PDF_LAYOUT.CONVERSION.MM_TO_POINTS * containerIndex);
             
-            // バーコードのサイズを調整
-            const maxBarcodeHeight = PDF_LAYOUT.CONTAINER.HEIGHT * PDF_LAYOUT.CONVERSION.MM_TO_POINTS * PDF_LAYOUT.BARCODE.HEIGHT_SCALE;
-            const scale = maxBarcodeHeight / barcodeImage.height;
-            const barcodeWidth = barcodeImage.width * scale;
-            const barcodeHeight = barcodeImage.height * scale;
-            
-            // バーコードを右下に配置
-            const barcodeX = containerX + (PDF_LAYOUT.CONTAINER.WIDTH * PDF_LAYOUT.CONVERSION.MM_TO_POINTS) - barcodeWidth - textMargin;
-            const barcodeY = baseY + textMargin; // 下端からマージン分だけ上に配置
-            
-            page.drawImage(barcodeImage, {
-              x: barcodeX,
-              y: barcodeY,
-              width: barcodeWidth,
-              height: barcodeHeight,
+            // コンテナの罫線を描画
+            page.drawRectangle({
+              x: containerX,
+              y: baseY,
+              width: PDF_LAYOUT.CONTAINER.WIDTH * PDF_LAYOUT.CONVERSION.MM_TO_POINTS,
+              height: PDF_LAYOUT.CONTAINER.HEIGHT * PDF_LAYOUT.CONVERSION.MM_TO_POINTS,
+              borderColor: rgb(0, 0, 0),
+              borderWidth: PDF_LAYOUT.BORDER.WIDTH,
             });
 
-            // 列Aの値（商品コード）を列Eの次の行、左詰めで配置
-            page.drawText(String(row[0] || ''), {
-              x: containerX + textMargin, // コンテナの左端からマージン分だけ右に
-              y: containerTopY - lineHeight * 6, // 列Eの次の次の行（lineHeight * 6）
+            // テキストデータの表示（コンテナ内に配置）
+            const textMargin = PDF_LAYOUT.TEXT.MARGIN * PDF_LAYOUT.CONVERSION.MM_TO_POINTS;
+            const lineHeight = PDF_LAYOUT.TEXT.LINE_HEIGHT * PDF_LAYOUT.CONVERSION.MM_TO_POINTS;
+            const containerTopY = baseY + PDF_LAYOUT.CONTAINER.HEIGHT * PDF_LAYOUT.CONVERSION.MM_TO_POINTS;
+
+            // コンテナの全幅を計算
+            const containerWidth = PDF_LAYOUT.CONTAINER.WIDTH * PDF_LAYOUT.CONVERSION.MM_TO_POINTS;
+
+            // 列Bの値（商品名）
+            const textB = String(row[1] || '');
+            const textBWidth = font.widthOfTextAtSize(textB, PDF_LAYOUT.TEXT.FONT_SIZE);
+            page.drawText(textB, {
+              x: containerX + (containerWidth - textBWidth) / 2,
+              y: containerTopY - lineHeight,
               font,
               size: PDF_LAYOUT.TEXT.FONT_SIZE,
             });
+
+            // 列Cの値（EAN 13桁）
+            const textC = String(row[2] || '');
+            const textCWidth = font.widthOfTextAtSize(textC, PDF_LAYOUT.TEXT.FONT_SIZE);
+            page.drawText(textC, {
+              x: containerX + (containerWidth - textCWidth) / 2,
+              y: containerTopY - lineHeight * 2,
+              font,
+              size: PDF_LAYOUT.TEXT.FONT_SIZE,
+            });
+
+            // 列Dの値（EAN 12桁）
+            const textD = String(row[3] || '');
+            const textDWidth = font.widthOfTextAtSize(textD, PDF_LAYOUT.TEXT.FONT_SIZE);
+            page.drawText(textD, {
+              x: containerX + (containerWidth - textDWidth) / 2,
+              y: containerTopY - lineHeight * 3,
+              font,
+              size: PDF_LAYOUT.TEXT.FONT_SIZE,
+            });
+
+            // 列Eの値（3桁）
+            const textE = String(row[4] || '');
+            const textEWidth = font.widthOfTextAtSize(textE, PDF_LAYOUT.TEXT.FONT_SIZE);
+            page.drawText(textE, {
+              x: containerX + (containerWidth - textEWidth) / 2,
+              y: containerTopY - lineHeight * 4,
+              font,
+              size: PDF_LAYOUT.TEXT.FONT_SIZE,
+            });
+
+            // バーコードの配置（コンテナ内の右側に配置）
+            const janCode = String(row[TABLE_CONSTANTS.COLUMNS.BARCODE]);
+            if (JAN_CODE.PATTERN.test(janCode)) {
+              const barcodeImage = await pdfDoc.embedPng(
+                Buffer.from(barcodeUrls[i].split(',')[1], 'base64')
+              );
+              
+              // バーコードのサイズを調整
+              const maxBarcodeHeight = PDF_LAYOUT.CONTAINER.HEIGHT * PDF_LAYOUT.CONVERSION.MM_TO_POINTS * PDF_LAYOUT.BARCODE.HEIGHT_SCALE;
+              const scale = maxBarcodeHeight / barcodeImage.height;
+              const barcodeWidth = barcodeImage.width * scale;
+              const barcodeHeight = barcodeImage.height * scale;
+              
+              // バーコードを右下に配置
+              const barcodeX = containerX + (PDF_LAYOUT.CONTAINER.WIDTH * PDF_LAYOUT.CONVERSION.MM_TO_POINTS) - barcodeWidth - textMargin;
+              const barcodeY = baseY + textMargin; // 下端からマージン分だけ上に配置
+              
+              page.drawImage(barcodeImage, {
+                x: barcodeX,
+                y: barcodeY,
+                width: barcodeWidth,
+                height: barcodeHeight,
+              });
+
+              // 列Aの値（商品コード）を列Eの次の行、左詰めで配置
+              page.drawText(String(row[0] || ''), {
+                x: containerX + textMargin, // コンテナの左端からマージン分だけ右に
+                y: containerTopY - lineHeight * 6, // 列Eの次の次の行（lineHeight * 6）
+                font,
+                size: PDF_LAYOUT.TEXT.FONT_SIZE,
+              });
+            }
           }
         }
       }
