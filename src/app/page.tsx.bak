@@ -1,0 +1,64 @@
+'use client';
+
+import { useState } from 'react';
+import { jsPDF } from 'jspdf';
+
+export default function Home() {
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  const generatePDF = async () => {
+    setIsGenerating(true);
+    
+    try {
+      // PDF生成
+      const doc = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
+
+      // 日本語フォントの設定
+      doc.addFont('https://raw.githubusercontent.com/mozilla/pdfjs-dist/master/web/cmaps/UniJIS-UTF8-H.bcmap', 'UniJIS', 'normal');
+      doc.setFont('UniJIS');
+      
+      // フォントサイズと位置の設定
+      doc.setFontSize(24);
+      const text = 'これは日本語のテスト文章です。';
+      
+      // テキストの配置位置を計算（中央揃え）
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
+      const textWidth = doc.getTextDimensions(text).w;
+      const x = (pageWidth - textWidth) / 2;
+      const y = pageHeight / 2;
+
+      // テキストを追加
+      doc.text(text, x, y);
+
+      // ダウンロードの確認
+      if (window.confirm('PDFをダウンロードしますか？')) {
+        // PDFのダウンロード
+        doc.save('test-document.pdf');
+      }
+    } catch (error) {
+      console.error('PDF generation failed:', error);
+      alert('PDFの生成に失敗しました');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  return (
+    <main className="flex min-h-screen flex-col items-center justify-center p-24">
+      <button
+        onClick={generatePDF}
+        disabled={isGenerating}
+        className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 
+                 disabled:bg-gray-400 disabled:cursor-not-allowed
+                 transition-colors duration-200"
+      >
+        {isGenerating ? 'PDF生成中...' : 'PDF出力'}
+      </button>
+    </main>
+  );
+}
