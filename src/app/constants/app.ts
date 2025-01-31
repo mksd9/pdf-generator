@@ -1,10 +1,14 @@
 // アプリケーション全般で使用する定数
 export const APP_CONSTANTS = {
-    TITLE: 'XLSX データ確認',
+    TITLE: 'ラベル44面　シート出力',
     SHEET_CONTENT_TITLE: 'シートの内容:',
     BUTTON_TEXT: {
       GENERATING: 'PDF生成中...',
       GENERATE: 'PDFを出力'
+    },
+    BORDER_OPTIONS: {
+      HIDE: '枠線を出力しない',
+      SHOW: '枠線を出力する'
     }
   } as const;
   

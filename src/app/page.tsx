@@ -27,8 +27,10 @@ export default function Home() {
   const [sheetData, setSheetData] = useState<SheetDataType>([]);
   const [hasValidData, setHasValidData] = useState(false);
   const [barcodeUrls, setBarcodeUrls] = useState<string[]>([]);
+  const [showBorder, setShowBorder] = useState(false);
 
-  // バーコード画像の生成 for test
+  // JANコードからバーコード画像を生成
+  // canvas要素を使用してバーコードを描画し、データURLとして返却
   const generateBarcodeImage = (barcodeNumber: string): string => {
     const canvas = document.createElement('canvas');
     JsBarcode(canvas, barcodeNumber, {
@@ -39,6 +41,8 @@ export default function Home() {
     return canvas.toDataURL(FILE_CONSTANTS.IMAGE_MIME_TYPE);
   };
 
+  // Excelファイルをアップロードし、バーコードデータを抽出・検証する
+  // 有効なJANコードを持つ行のみを抽出し、対応するバーコード画像を生成
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -70,6 +74,9 @@ export default function Home() {
     }
   };
 
+  // PDFを生成し、A4用紙に4列×11行のコンテナを配置
+  // 各コンテナには商品情報とバーコードを配置
+  // 生成後、ダウンロードを促す
   const generatePDF = async () => {
     setIsGenerating(true);
     
@@ -100,15 +107,17 @@ export default function Home() {
             const containerX = (PDF_LAYOUT.MARGINS.LEFT * PDF_LAYOUT.CONVERSION.MM_TO_POINTS) + 
                              (PDF_LAYOUT.CONTAINER.WIDTH * PDF_LAYOUT.CONVERSION.MM_TO_POINTS * containerIndex);
             
-            // コンテナの罫線を描画
-            page.drawRectangle({
-              x: containerX,
-              y: baseY,
-              width: PDF_LAYOUT.CONTAINER.WIDTH * PDF_LAYOUT.CONVERSION.MM_TO_POINTS,
-              height: PDF_LAYOUT.CONTAINER.HEIGHT * PDF_LAYOUT.CONVERSION.MM_TO_POINTS,
-              borderColor: rgb(0, 0, 0),
-              borderWidth: PDF_LAYOUT.BORDER.WIDTH,
-            });
+            // コンテナの罫線を描画（showBorderがtrueの場合のみ）
+            if (showBorder) {
+              page.drawRectangle({
+                x: containerX,
+                y: baseY,
+                width: PDF_LAYOUT.CONTAINER.WIDTH * PDF_LAYOUT.CONVERSION.MM_TO_POINTS,
+                height: PDF_LAYOUT.CONTAINER.HEIGHT * PDF_LAYOUT.CONVERSION.MM_TO_POINTS,
+                borderColor: rgb(0, 0, 0),
+                borderWidth: PDF_LAYOUT.BORDER.WIDTH,
+              });
+            }
 
             // テキストデータの表示（コンテナ内に配置）
             const textMargin = PDF_LAYOUT.TEXT.MARGIN * PDF_LAYOUT.CONVERSION.MM_TO_POINTS;
@@ -218,6 +227,8 @@ export default function Home() {
     }
   };
 
+  // メインのレイアウト
+  // ファイルアップロード、データプレビュー、PDF生成ボタン、罫線表示切替を配置
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-8">
       <h1 className="mb-4 text-2xl font-bold">{APP_CONSTANTS.TITLE}</h1>
@@ -268,15 +279,40 @@ export default function Home() {
         </div>
       )}
 
-      <button
-        onClick={generatePDF}
-        disabled={isGenerating || !hasValidData}
-        className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 
-                  disabled:bg-gray-400 disabled:cursor-not-allowed
-                  transition-colors duration-200"
-      >
-        {isGenerating ? APP_CONSTANTS.BUTTON_TEXT.GENERATING : APP_CONSTANTS.BUTTON_TEXT.GENERATE}
-      </button>
+      <div className="flex flex-col items-center gap-4">
+        <button
+          onClick={generatePDF}
+          disabled={isGenerating || !hasValidData}
+          className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 
+                    disabled:bg-gray-400 disabled:cursor-not-allowed
+                    transition-colors duration-200"
+        >
+          {isGenerating ? APP_CONSTANTS.BUTTON_TEXT.GENERATING : APP_CONSTANTS.BUTTON_TEXT.GENERATE}
+        </button>
+
+        <div className="flex gap-4">
+          <label className="flex items-center">
+            <input
+              type="radio"
+              name="borderOption"
+              checked={!showBorder}
+              onChange={() => setShowBorder(false)}
+              className="mr-2"
+            />
+            {APP_CONSTANTS.BORDER_OPTIONS.HIDE}
+          </label>
+          <label className="flex items-center">
+            <input
+              type="radio"
+              name="borderOption"
+              checked={showBorder}
+              onChange={() => setShowBorder(true)}
+              className="mr-2"
+            />
+            {APP_CONSTANTS.BORDER_OPTIONS.SHOW}
+          </label>
+        </div>
+      </div>
     </main>
   );
 }
