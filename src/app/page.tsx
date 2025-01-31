@@ -28,7 +28,7 @@ export default function Home() {
   const [hasValidData, setHasValidData] = useState(false);
   const [barcodeUrls, setBarcodeUrls] = useState<string[]>([]);
 
-  // バーコード画像の生成
+  // バーコード画像の生成 for test
   const generateBarcodeImage = (barcodeNumber: string): string => {
     const canvas = document.createElement('canvas');
     JsBarcode(canvas, barcodeNumber, {
