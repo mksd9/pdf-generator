@@ -2,7 +2,6 @@ import { PDFDocument, PageSizes, rgb } from 'pdf-lib';
 import fontkit from '@pdf-lib/fontkit';
 import { NOTO_SANS_JP_BASE64 } from '../../../fonts/noto-sans-jp-base64';
 import { PDF_LAYOUT } from '../../constants/data';
-import { FILE_CONSTANTS } from '../../constants/app';
 import { SheetDataType } from '../../types/excel';
 import { PDFGenerationError } from '../../types/errors';
 import {
