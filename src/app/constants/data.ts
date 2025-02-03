@@ -3,7 +3,7 @@ export const TABLE_CONSTANTS = {
     COLUMNS: {
       TOTAL_COUNT: 6,  // 列A～列Fまでの総列数
       MAIN_COUNT: 5,   // 列A～列Eまでの基本列数
-      BARCODE: 2       // JANコードが格納される列
+      BARCODE: 5       // JANコードが格納される列（F列）
     },
     STYLES: {
       CELL_CLASS: 'border p-2',
