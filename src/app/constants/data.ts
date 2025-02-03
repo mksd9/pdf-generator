@@ -34,7 +34,7 @@ export const TABLE_CONSTANTS = {
   
   // JANコード検証用の定数
   export const JAN_CODE = {
-  PATTERN: /^\d{13}$/
+  PATTERN: /^\d{12}$/
   } as const;
 
 // PDFレイアウト関連の定数

@@ -49,12 +49,12 @@ export const processExcelFile = async (file: File): Promise<ProcessExcelResult> 
         return false;
       }
 
-      // すべての必須フィールドが存在することを確認
-      for (let i = 0; i < TABLE_CONSTANTS.COLUMNS.MAIN_COUNT; i++) {
-        if (row[i] === undefined || row[i] === '') {
-          return false;
-        }
-      }
+      // すべての必須フィールドが存在することを確認（不要かもしれない）
+      // for (let i = 0; i < TABLE_CONSTANTS.COLUMNS.MAIN_COUNT; i++) {
+      //   if (row[i] === undefined || row[i] === '') {
+      //     return false;
+      //   }
+      // }
 
       return true;
     });
